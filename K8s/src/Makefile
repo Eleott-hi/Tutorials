@@ -1,4 +1,4 @@
-all: vagrant_down vagrant_up init
+all: vagrant_down vagrant_up
 
 docker_compose_up:
 	docker compose up
@@ -28,5 +28,24 @@ else
 	vagrant ssh-config $(vm)
 endif
 
-init:
-	vagrant ssh manager -c "ln -s /vagrant/vm_data /home/vagrant/vm_data;"
+.PHONY: save
+save:
+ifndef vm
+	vagrant snapshot save vm1 latest
+	vagrant snapshot save vm2 latest
+	vagrant snapshot save vm3 latest
+else
+	vagrant snapshot save vm$(vm) latest
+endif
+
+.PHONY: restore
+restore:
+ifndef vm
+	vagrant snapshot restore vm1 latest
+	vagrant snapshot restore vm2 latest
+	vagrant snapshot restore vm3 latest
+else
+	vagrant snapshot restore vm$(vm) latest
+endif
+
+

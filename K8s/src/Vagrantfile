@@ -1,21 +1,23 @@
 Vagrant.configure("2") do |config|
   vm_box = "Boxes/focal-server-cloudimg-amd64-vagrant.box"
 
-  for i in 1..3
+  (1..3).each do |i|
     config.vm.define "vm#{i}" do |machine|
-      machine.vm.box = vm_box
-      machine.vm.network :private_network, ip: "10.100.199.20#{i}"
-      machine.vm.hostname = "vm#{i}"
-      machine.vm.provider "virtualbox" do |vb|
-        vb.name = "vm#{i}"
-        vb.memory = "4000"
-      end
+      machine.tap do |m|
+        m.vm.box = vm_box
+        m.vm.network :private_network, ip: "10.100.199.20#{i}"
+        m.vm.hostname = "vm#{i}"
+        m.vm.provider "virtualbox" do |vb|
+          vb.name = "vm#{i}"
+          vb.memory = "4000"
+        end
 
-      machine.vm.provision "shell", inline: <<-SHELL
-        sudo apt update
-        sudo apt upgrade -y
-        sudo apt install -y docker.io 
-      SHELL
+        m.vm.provision "shell", inline: <<-SHELL
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y docker.io 
+        SHELL
+      end
     end
   end
 end

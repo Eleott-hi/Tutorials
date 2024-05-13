@@ -1,0 +1,4 @@
+alembic
+sqlmodel
+databases[postgresql]
+asyncpg
